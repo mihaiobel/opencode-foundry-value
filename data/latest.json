@@ -87,7 +87,9 @@
       "aa_speed_tps": 55.2,
       "aa_cost_per_task": 0.72,
       "aa_status": "ok",
-      "aa_slug": "gpt-6-1-sol"
+      "aa_slug": "gpt-6-1-sol",
+      "aa_title": "GPT-6.1 Sol (max)",
+      "aa_release": "2026-09-29"
     },
     {
       "id": "gpt-6-luna",
@@ -123,7 +125,9 @@
       "aa_speed_tps": 135.2,
       "aa_cost_per_task": 0.07,
       "aa_status": "ok",
-      "aa_slug": "gpt-6-luna"
+      "aa_slug": "gpt-6-luna",
+      "aa_title": "GPT-6 Luna (max)",
+      "aa_release": "2026-09-22"
     },
     {
       "id": "gpt-6-sol",
@@ -159,7 +163,9 @@
       "aa_speed_tps": 101.7,
       "aa_cost_per_task": 1.04,
       "aa_status": "ok",
-      "aa_slug": "gpt-6-sol"
+      "aa_slug": "gpt-6-sol",
+      "aa_title": "GPT-6 Sol (max)",
+      "aa_release": "2026-09-22"
     },
     {
       "id": "gpt-6-astra",
@@ -195,7 +201,9 @@
       "aa_speed_tps": 56.7,
       "aa_cost_per_task": 3.26,
       "aa_status": "ok",
-      "aa_slug": "gpt-6-astra"
+      "aa_slug": "gpt-6-astra",
+      "aa_title": "GPT-6 Astra (max)",
+      "aa_release": "2026-09-03"
     },
     {
       "id": "gpt-5-6-sol",
@@ -231,7 +239,9 @@
       "aa_speed_tps": 80.9,
       "aa_cost_per_task": 1.99,
       "aa_status": "ok",
-      "aa_slug": "gpt-5-6-sol"
+      "aa_slug": "gpt-5-6-sol",
+      "aa_title": "GPT-5.6 Sol (max)",
+      "aa_release": "2026-07-09"
     },
     {
       "id": "gpt-5-6-luna",
@@ -267,7 +277,9 @@
       "aa_speed_tps": 129.3,
       "aa_cost_per_task": 0.18,
       "aa_status": "ok",
-      "aa_slug": "gpt-5-6-luna"
+      "aa_slug": "gpt-5-6-luna",
+      "aa_title": "GPT-5.6 Luna (max)",
+      "aa_release": "2026-07-09"
     },
     {
       "id": "gpt-5-6-terra",
@@ -303,7 +315,9 @@
       "aa_speed_tps": 124.9,
       "aa_cost_per_task": 1.4,
       "aa_status": "ok",
-      "aa_slug": "gpt-5-6-terra"
+      "aa_slug": "gpt-5-6-terra",
+      "aa_title": "GPT-5.6 Terra (max)",
+      "aa_release": "2026-07-09"
     },
     {
       "id": "gpt-realtime-2-1",
@@ -400,7 +414,9 @@
       "aa_speed_tps": 160.6,
       "aa_cost_per_task": 0.5,
       "aa_status": "ok",
-      "aa_slug": "mistral-medium-3-5"
+      "aa_slug": "mistral-medium-3-5",
+      "aa_title": "Mistral Medium 3.5",
+      "aa_release": "2026-04-29"
     },
     {
       "id": "deepseek-v4-flash",
@@ -430,11 +446,13 @@
       "chat": true,
       "released": "2026-04-24",
       "superseded_by": null,
-      "aa_intelligence": 34,
-      "aa_speed_tps": 152.3,
-      "aa_cost_per_task": 0.15,
+      "aa_intelligence": 24,
+      "aa_speed_tps": 48.6,
+      "aa_cost_per_task": 0.09,
       "aa_status": "ok",
-      "aa_slug": "deepseek-v4-flash"
+      "aa_slug": "deepseek-v4-flash-0420",
+      "aa_title": "DeepSeek V4 Flash (max)",
+      "aa_release": "2026-04-24"
     },
     {
       "id": "gpt-5-5",
@@ -470,7 +488,9 @@
       "aa_speed_tps": 83.4,
       "aa_cost_per_task": 2.63,
       "aa_status": "ok",
-      "aa_slug": "gpt-5-5"
+      "aa_slug": "gpt-5-5",
+      "aa_title": "GPT-5.5 (xhigh)",
+      "aa_release": "2026-04-23"
     },
     {
       "id": "gpt-5-nano",
@@ -504,7 +524,9 @@
       "aa_speed_tps": 134.5,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-5-nano"
+      "aa_slug": "gpt-5-nano",
+      "aa_title": "GPT-5 nano (high)",
+      "aa_release": "2025-08-07"
     },
     {
       "id": "gpt-5-4-mini",
@@ -540,7 +562,9 @@
       "aa_speed_tps": 234.9,
       "aa_cost_per_task": 0.45,
       "aa_status": "ok",
-      "aa_slug": "gpt-5-4-mini"
+      "aa_slug": "gpt-5-4-mini",
+      "aa_title": "GPT-5.4 mini (xhigh)",
+      "aa_release": "2026-03-17"
     },
     {
       "id": "gpt-5-4",
@@ -576,7 +600,9 @@
       "aa_speed_tps": 96.4,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-5-4"
+      "aa_slug": "gpt-5-4",
+      "aa_title": "GPT-5.4 (xhigh)",
+      "aa_release": "2026-03-05"
     },
     {
       "id": "gpt-realtime-1-5",
@@ -736,7 +762,9 @@
       "aa_speed_tps": 79.5,
       "aa_cost_per_task": 0.03,
       "aa_status": "ok",
-      "aa_slug": "mistral-large-3"
+      "aa_slug": "mistral-large-3",
+      "aa_title": "Mistral Large 3",
+      "aa_release": "2025-12-02"
     },
     {
       "id": "mistral-document-ai-2512",
@@ -867,7 +895,9 @@
       "aa_speed_tps": 102.7,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-5-1"
+      "aa_slug": "gpt-5-1",
+      "aa_title": "GPT-5.1 (high)",
+      "aa_release": "2025-11-13"
     },
     {
       "id": "gpt-5",
@@ -901,7 +931,9 @@
       "aa_speed_tps": 93.8,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-5"
+      "aa_slug": "gpt-5",
+      "aa_title": "GPT-5 (high)",
+      "aa_release": "2025-08-07"
     },
     {
       "id": "gpt-5-mini",
@@ -935,7 +967,9 @@
       "aa_speed_tps": 114.6,
       "aa_cost_per_task": 0.05,
       "aa_status": "ok",
-      "aa_slug": "gpt-5-mini"
+      "aa_slug": "gpt-5-mini",
+      "aa_title": "GPT-5 mini (high)",
+      "aa_release": "2025-08-07"
     },
     {
       "id": "flux-1-kontext-pro",
@@ -1003,7 +1037,9 @@
       "aa_speed_tps": 108.1,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "o3"
+      "aa_slug": "o3",
+      "aa_title": "o3",
+      "aa_release": "2025-04-16"
     },
     {
       "id": "o4-mini",
@@ -1037,7 +1073,9 @@
       "aa_speed_tps": 143.7,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "o4-mini"
+      "aa_slug": "o4-mini",
+      "aa_title": "o4-mini (high)",
+      "aa_release": "2025-04-16"
     },
     {
       "id": "gpt-4-1",
@@ -1071,7 +1109,9 @@
       "aa_speed_tps": 160.3,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-4-1"
+      "aa_slug": "gpt-4-1",
+      "aa_title": "GPT-4.1",
+      "aa_release": "2025-04-14"
     },
     {
       "id": "gpt-4-1-mini",
@@ -1105,7 +1145,9 @@
       "aa_speed_tps": 160.8,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-4-1-mini"
+      "aa_slug": "gpt-4-1-mini",
+      "aa_title": "GPT-4.1 mini",
+      "aa_release": "2025-04-14"
     },
     {
       "id": "gpt-4-1-nano",
@@ -1139,7 +1181,9 @@
       "aa_speed_tps": 227.9,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-4-1-nano"
+      "aa_slug": "gpt-4-1-nano",
+      "aa_title": "GPT-4.1 nano",
+      "aa_release": "2025-04-14"
     },
     {
       "id": "gpt-4o-transcribe",
@@ -1202,7 +1246,9 @@
       "aa_speed_tps": 188.0,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "o3-mini"
+      "aa_slug": "o3-mini",
+      "aa_title": "o3-mini",
+      "aa_release": "2025-01-31"
     },
     {
       "id": "gpt-4o",
@@ -1235,7 +1281,9 @@
       "aa_speed_tps": 181.9,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-4o"
+      "aa_slug": "gpt-4o",
+      "aa_title": "GPT-4o (Nov)",
+      "aa_release": "2024-11-20"
     },
     {
       "id": "flux-1-1-pro",
@@ -1302,8 +1350,10 @@
       "aa_intelligence": null,
       "aa_speed_tps": null,
       "aa_cost_per_task": null,
-      "aa_status": "no_data",
-      "aa_slug": "o1"
+      "aa_status": "version_mismatch",
+      "aa_slug": "o1",
+      "aa_title": "o1",
+      "aa_release": "2024-12-05"
     },
     {
       "id": "gpt-4o-mini",
@@ -1337,7 +1387,9 @@
       "aa_speed_tps": 105.4,
       "aa_cost_per_task": null,
       "aa_status": "partial",
-      "aa_slug": "gpt-4o-mini"
+      "aa_slug": "gpt-4o-mini",
+      "aa_title": "GPT-4o mini",
+      "aa_release": "2024-07-18"
     },
     {
       "id": "text-embedding-3-large",

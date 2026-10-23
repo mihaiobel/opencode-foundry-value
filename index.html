@@ -64,7 +64,7 @@
             <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
             <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
           </dl>
-          <p class="pick-reason">About one call per task, then a long report. Highest AA intel at an output price of $15/1M or less, from a vendor no other role uses.</p>
+          <p class="pick-reason">About one call per task, then a long report. Highest AA intel (34 or better) at an output price of $15/1M or less, from a vendor no other role uses.</p>
         </article>
 
         <article class="pick" data-role="researcher">
@@ -116,11 +116,15 @@ Sources, primary only, never guess:
 - <a href="https://modelavailability.com/platforms/azure/regions/swedencentral?deployment=data-zone-standard+%28EU%29">https://modelavailability.com/platforms/azure/regions/swedencentral?deployment=data-zone-standard+%28EU%29</a>
   -&gt; the model list. Open each model page and read the data-zone-standard (EU)
   card: input, output and cached input in USD per 1M tokens (short context),
-  status and deprecation date. If the card has no price, mark it &quot;no price&quot;.
+  status and deprecation date. If that card has no price, use the global-standard
+  card price and mark it with an asterisk. If neither has a price, mark it "no price".
 - <a href="https://artificialanalysis.ai/models/&lt;slug&gt;">https://artificialanalysis.ai/models/&lt;slug&gt;</a>  -&gt; Intelligence Index, Cost per Task in USD,
-  output speed in t/s. If the AA page is missing or has no index, mark it &quot;no AA data&quot;.
+  output speed in t/s. The AA page must be the same revision as the Foundry model:
+  compare release dates (within 3 days) and the reasoning variant. If the AA page is
+  missing, has no index or is another revision, mark it "no AA data".
 
-Skip: embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
+Skip older releases of the same vendor and tier (gpt-6-sol replaces gpt-5-6-sol, and so on),
+embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
 or deprecating, and anything retired within 180 days.
 Blended price = (3 x input + output) / 4 per 1M tokens.
 
@@ -129,13 +133,13 @@ only has to differ from dev:
 - orchestrator: lowest cached-input price at AA intel &gt;= 38.
 - dev: highest AA speed per blended dollar at AA intel &gt;= 34.
 - researcher: lowest blended price at AA intel &gt;= 34, not the dev model.
-- reviewer: highest AA intel at output &lt;= $15/1M, from a vendor no other role uses.
-  If every priced vendor is taken, use the best remaining model and say &quot;same vendor&quot;.
+- reviewer: highest AA intel (at least 34) at output &lt;= $15/1M, from a vendor no other role uses.
+  If every priced vendor is taken, use the best remaining model and say "same vendor".
 
 Output:
 1. Role table: role | model id | rationale | in/out $/1M, AA intel, AA speed.
 2. Table of all chat models with price, AA values, retire date and recommended role.
-3. Call out missing prices as &quot;no price&quot; and missing AA data as &quot;no AA data&quot;.</pre>
+3. Call out missing prices as "no price" and missing AA data as "no AA data".</pre>
         </details>
       </div>
     </section>

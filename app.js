@@ -87,12 +87,14 @@ function pickResearcher(pool, taken) {
   )[0] || null;
 }
 
-// reviewer: about one call per task. Highest AA intel with output <= $15/1M, from a
+// reviewer: about one call per task. Highest AA intel (at least 34) with output <= $15/1M, from a
 // vendor no other role uses. If every priced vendor is already used, it falls
 // back to the best remaining model of a used vendor. Errors may then correlate
 // with the other roles, which is accepted and not shown on the page.
 function pickReviewer(pool, taken, usedVendors) {
-  const open = pool.filter((m) => !taken.has(m.id) && m.price_out <= REVIEWER_MAX_OUT);
+  const open = pool.filter(
+    (m) => !taken.has(m.id) && m.aa_intelligence >= 34 && m.price_out <= REVIEWER_MAX_OUT
+  );
   const rank = (list) =>
     sortBy(list, (m) => -m.aa_intelligence, (m) => blended(m))[0] || null;
   const other = rank(open.filter((m) => !usedVendors.has(m.vendor)));

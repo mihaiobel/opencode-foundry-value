@@ -40,7 +40,10 @@ NON_CHAT = re.compile(
     r"image|flux|live|decision|model-router|sora|dall)",
     re.I,
 )
-AA_KEYS = ("aa_intelligence", "aa_speed_tps", "aa_cost_per_task", "aa_status", "aa_slug")
+AA_KEYS = (
+    "aa_intelligence", "aa_speed_tps", "aa_cost_per_task", "aa_status",
+    "aa_slug", "aa_title", "aa_release",
+)
 
 
 def log(msg: str) -> None:

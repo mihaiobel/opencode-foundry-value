@@ -15,7 +15,9 @@ Sources, primary only, never guess:
   status and deprecation date. If that card has no price, use the global-standard
   card price and mark it with an asterisk. If neither has a price, mark it "no price".
 - https://artificialanalysis.ai/models/<slug>  -> Intelligence Index, Cost per Task in USD,
-  output speed in t/s. If the AA page is missing or has no index, mark it "no AA data".
+  output speed in t/s. The AA page must be the same revision as the Foundry model:
+  compare release dates (within 3 days) and the reasoning variant. If the AA page is
+  missing, has no index or is another revision, mark it "no AA data".
 
 Skip older releases of the same vendor and tier (gpt-6-sol replaces gpt-5-6-sol, and so on),
 embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
@@ -27,7 +29,7 @@ only has to differ from dev:
 - orchestrator: lowest cached-input price at AA intel >= 38.
 - dev: highest AA speed per blended dollar at AA intel >= 34.
 - researcher: lowest blended price at AA intel >= 34, not the dev model.
-- reviewer: highest AA intel at output <= $15/1M, from a vendor no other role uses.
+- reviewer: highest AA intel (at least 34) at output <= $15/1M, from a vendor no other role uses.
   If every priced vendor is taken, use the best remaining model and say "same vendor".
 
 Output:

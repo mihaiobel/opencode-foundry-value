@@ -14,8 +14,11 @@ replaced by the plain token price.
   challenge, so `scripts/fetch_foundry.py` needs playwright and chromium.
 - Prices are USD per 1M tokens, short context. The source shows no EUR prices.
 - A model with no price on the source is marked `no price` and never picked. Nothing is guessed.
-- Intelligence Index, speed and cost per task come from Artificial Analysis. A model without
-  an index is marked `no AA data`.
+- Intelligence Index, speed and cost per task come from Artificial Analysis. The AA page must
+  match the Foundry release date (3 days). A model without an index or with another revision
+  is marked `no AA data`. `AA_SLUG_OVERRIDES` in `scripts/audit_aa.py` maps a Foundry id to the
+  matching AA revision (DeepSeek V4 Flash uses the April `0420` page).
+- AA values are the highest reasoning effort AA tests (max, xhigh or high).
 - Models with status legacy or deprecating, or retiring within 180 days, are never picked.
 - Role rules are in `refresh-prompt.md` and implemented in `app.js`. Orchestrator, dev and reviewer use different models; the researcher only has to differ from dev.
 
