@@ -74,11 +74,11 @@ def region_models(page) -> list[dict]:
     return out
 
 
-def azure_entry(html: str) -> dict | None:
-    """Find the Azure availability card for DEPLOYMENT and decode it."""
+def azure_entry(html: str, deployment: str = DEPLOYMENT) -> dict | None:
+    """Find the Azure availability card for a deployment type and decode it."""
     s = html.replace('\\"', '"')
     dec = json.JSONDecoder()
-    needle = '{"availability":{"deploymentType":"%s"' % DEPLOYMENT
+    needle = '{"availability":{"deploymentType":"%s"' % deployment
     pos, found = 0, None
     while True:
         i = s.find(needle, pos)
@@ -108,10 +108,10 @@ def parse_model(browser, row: dict) -> dict | None:
         ctx.close()
 
 
-def dom_prices(text: str) -> dict:
+def dom_prices(text: str, deployment: str = DEPLOYMENT) -> dict:
     """Short-context prices from the rendered card, used when the embedded
     JSON only holds a reference. The page rounds to two decimals."""
-    i = text.find(DEPLOYMENT + "\nPricing (per 1M tokens)")
+    i = text.find("\n" + deployment + "\nPricing (per 1M tokens)")
     if i < 0:
         return {}
     block = text[i:]
@@ -128,6 +128,18 @@ def dom_prices(text: str) -> dict:
     return out
 
 
+def prices_for(html: str, text: str, deployment: str, ptype: str):
+    """Short-context prices for one deployment type: embedded JSON first,
+    then the rendered card. Returns (prices, source) or ({}, None)."""
+    obj = azure_entry(html, deployment)
+    if obj:
+        for p in obj["availability"].get("pricing") or []:
+            if isinstance(p, dict) and p.get("type") == ptype:
+                return p["prices"], "json"
+    got = dom_prices(text, deployment)
+    return (got, "page") if got else ({}, None)
+
+
 def _parse_model(page, row: dict) -> dict | None:
     page.goto(BASE + row["href"], wait_until="load", timeout=90000)
     obj = None
@@ -141,15 +153,17 @@ def _parse_model(page, row: dict) -> dict | None:
         log(f"  no Azure {DEPLOYMENT} card: {row['href']}")
         return None
     av = obj["availability"]
-    prices = {
-        p["type"]: p["prices"] for p in av.get("pricing", []) if isinstance(p, dict)
-    }
-    short = prices.get("data-zone-standard", {})
-    price_src = "json" if short else None
+    html, text = page.content(), page.inner_text("body")
+    short, price_src = prices_for(html, text, DEPLOYMENT, "data-zone-standard")
+    fallback = None
     if not short:
-        short = dom_prices(page.inner_text("body"))
-        price_src = "page" if short else None
-    long_ = prices.get("data-zone-standard_long", {})
+        # No EU data-zone price listed: use the global-standard price instead.
+        short, price_src = prices_for(html, text, "global-standard", "global-standard")
+        fallback = "global-standard" if short else None
+    long_ = {}
+    for p in av.get("pricing") or []:
+        if isinstance(p, dict) and p.get("type") == "data-zone-standard_long":
+            long_ = p["prices"]
     return {
         "id": row["href"].rsplit("/", 1)[-1],
         "name": row["id"],
@@ -161,6 +175,7 @@ def _parse_model(page, row: dict) -> dict | None:
         "regions": av.get("regions", []),
         "deprecation": (av.get("deprecationDate") or "")[:10] or None,
         "price_src": price_src,
+        "price_fallback": fallback,
         "price_in": short.get("input"),
         "price_out": short.get("output"),
         "price_cached": short.get("cached_input", short.get("cache_read")),
@@ -168,6 +183,46 @@ def _parse_model(page, row: dict) -> dict | None:
         "price_out_long": long_.get("output"),
         "chat": not NON_CHAT.search(row["href"]),
     }
+
+
+def release_dates() -> dict[str, str]:
+    """href -> release date, from the site's llms-full.txt."""
+    import urllib.request
+
+    req = urllib.request.Request(BASE + "/llms-full.txt", headers={"User-Agent": UA})
+    try:
+        body = urllib.request.urlopen(req, timeout=60).read().decode("utf-8", "replace")
+    except Exception as exc:  # noqa: BLE001
+        log(f"warn: no release dates: {exc}")
+        return {}
+    out = {}
+    for m in re.finditer(r"\]\(" + re.escape(BASE) + r"(/models/[^)]+)\)[^\n]*?released: (\d{4}-\d{2}-\d{2})", body):
+        out[m.group(1)] = m.group(2)
+    return out
+
+
+TIERS = {"luna", "sol", "terra", "astra", "mini", "nano", "flash", "large", "medium", "pro"}
+
+
+def line_key(m: dict) -> tuple[str, str]:
+    """(vendor, tier): the model line a newer release replaces."""
+    last = m["id"].split("-")[-1]
+    return m["vendor"], last if last in TIERS else "base"
+
+
+def mark_superseded(models: list[dict]) -> None:
+    """Within one line only the newest release is current; older ones get
+    superseded_by set and are never picked."""
+    for m in models:
+        m["superseded_by"] = None
+    groups: dict[tuple[str, str], list[dict]] = {}
+    for m in models:
+        if m["chat"] and m.get("released"):
+            groups.setdefault(line_key(m), []).append(m)
+    for grp in groups.values():
+        grp.sort(key=lambda m: (m["released"], m["id"]), reverse=True)
+        for old in grp[1:]:
+            old["superseded_by"] = grp[0]["id"]
 
 
 def main() -> int:
@@ -204,6 +259,10 @@ def main() -> int:
         log("error: no models scraped, keeping old data")
         return 1
 
+    dates = release_dates()
+    for m in models:
+        m["released"] = dates.get(m["page"].removeprefix(BASE))
+    mark_superseded(models)
     for m in models:
         prev = old.get(m["id"], {})
         for k in AA_KEYS:
@@ -226,7 +285,8 @@ def main() -> int:
         ],
         "notes": [
             "Prices are the short-context data-zone-standard (EU) prices on modelavailability.com, USD per 1M tokens. The site lists no EUR prices.",
-            "price_src json = embedded page data, page = rendered card (two decimals). A model with no price on the site has price_in null and is never picked.",
+            "price_src json = embedded page data, page = rendered card (two decimals). price_fallback global-standard = the EU data-zone card lists no price, so the global-standard price is shown with an asterisk. A model with no price in either place has price_in null and is never picked.",
+            "superseded_by names the newer release of the same vendor and tier (luna, sol, mini, ...). Superseded models are never picked.",
             "AA values are carried over by model id; scripts/audit_aa.py fills them.",
         ],
     }

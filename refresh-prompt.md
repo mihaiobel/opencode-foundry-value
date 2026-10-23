@@ -12,11 +12,13 @@ Sources, primary only, never guess:
 - https://modelavailability.com/platforms/azure/regions/swedencentral?deployment=data-zone-standard+%28EU%29
   -> the model list. Open each model page and read the data-zone-standard (EU)
   card: input, output and cached input in USD per 1M tokens (short context),
-  status and deprecation date. If the card has no price, mark it "no price".
+  status and deprecation date. If that card has no price, use the global-standard
+  card price and mark it with an asterisk. If neither has a price, mark it "no price".
 - https://artificialanalysis.ai/models/<slug>  -> Intelligence Index, Cost per Task in USD,
   output speed in t/s. If the AA page is missing or has no index, mark it "no AA data".
 
-Skip: embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
+Skip older releases of the same vendor and tier (gpt-6-sol replaces gpt-5-6-sol, and so on),
+embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
 or deprecating, and anything retired within 180 days.
 Blended price = (3 x input + output) / 4 per 1M tokens.
 

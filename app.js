@@ -30,13 +30,14 @@ function daysLeft(m, today) {
   return (Date.parse(m.deprecation) - today) / 86400000;
 }
 
-// Only models that can be picked: chat model, Foundry price known, full AA data,
+// Only models that can be picked: current release of its line, chat model, Foundry price known, full AA data,
 // not about to be retired.
 function eligible(models, today) {
   return models.filter(
     (m) =>
       m.chat &&
       m.in_region &&
+      !m.superseded_by &&
       blended(m) !== null &&
       num(m.aa_intelligence) !== null &&
       num(m.aa_speed_tps) !== null &&
@@ -140,8 +141,15 @@ function fmtUsd(v) {
   });
 }
 
+// Prices taken from global-standard (the EU data-zone card lists none) get an asterisk.
+function star(m) {
+  return m.price_fallback ? "*" : "";
+}
+
 function fmtPair(m) {
-  return num(m.price_in) === null ? NA : fmtUsd(m.price_in) + " / " + fmtUsd(m.price_out);
+  return num(m.price_in) === null
+    ? NA
+    : fmtUsd(m.price_in) + " / " + fmtUsd(m.price_out) + star(m);
 }
 
 /* ---------- role picks ---------- */
@@ -180,9 +188,9 @@ function renderRoles(reco) {
 
 const COLUMNS = [
   { key: "id", label: "Model", type: "text", cell: (m) => m.id },
-  { key: "price_in", label: "in $/1M", type: "num", cell: (m) => m.price_in, fmt: fmtUsd },
-  { key: "price_out", label: "out $/1M", type: "num", cell: (m) => m.price_out, fmt: fmtUsd },
-  { key: "price_cached", label: "cached $/1M", type: "num", cell: (m) => m.price_cached, fmt: fmtUsd },
+  { key: "price_in", label: "in $/1M", type: "num", cell: (m) => m.price_in, fmt: fmtUsd, star: true },
+  { key: "price_out", label: "out $/1M", type: "num", cell: (m) => m.price_out, fmt: fmtUsd, star: true },
+  { key: "price_cached", label: "cached $/1M", type: "num", cell: (m) => m.price_cached, fmt: fmtUsd, star: true },
   { key: "aa_intelligence", label: "AA intel", type: "num", cell: (m) => m.aa_intelligence, fmt: (v) => fmtNum(v) },
   { key: "aa_speed_tps", label: "AA t/s", type: "num", cell: (m) => m.aa_speed_tps, fmt: (v) => fmtNum(v, 0) },
   { key: "aa_cost_per_task", label: "AA $/task", type: "num", cell: (m) => m.aa_cost_per_task, fmt: fmtUsd },
@@ -269,7 +277,9 @@ function renderTable(models, reco) {
       const td = document.createElement("td");
       const raw = col.cell(m);
       td.textContent =
-        col.type === "text" ? (raw === null || raw === undefined ? NA : String(raw)) : col.fmt(raw);
+        col.type === "text"
+          ? raw === null || raw === undefined ? NA : String(raw)
+          : col.fmt(raw) + (col.star && num(raw) !== null ? star(m) : "");
       td.dataset.label = col.label;
       if (col.type === "num") td.classList.add("num");
       if (idx === 0) {
@@ -352,7 +362,13 @@ async function init() {
     return;
   }
   const meta = payload.meta || {};
-  const models = (Array.isArray(payload.models) ? payload.models : []).filter((m) => m.chat);
+  // Chat models of the current release in their line; older ones are hidden.
+  const chat = (Array.isArray(payload.models) ? payload.models : []).filter((m) => m.chat);
+  const models = chat.filter((m) => !m.superseded_by);
+  const hidden = document.getElementById("hidden-count");
+  if (hidden) hidden.textContent = String(chat.length - models.length);
+  const starNote = document.getElementById("star-note");
+  if (starNote && !models.some((m) => m.price_fallback)) starNote.hidden = true;
   renderMeta(meta);
   const reco = recommend(models, Date.now());
   renderRoles(reco);
