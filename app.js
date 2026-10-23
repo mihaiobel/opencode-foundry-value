@@ -280,7 +280,7 @@ function renderMeta(meta) {
     if (el) el.textContent = text;
   };
   set("stand-date", meta.as_of || NA);
-  set("scope-name", (meta.region || NA) + ", " + (meta.deployment || NA));
+  set("scope-name", meta.deployment || NA);
   const full = meta.aa_index_version || NA;
   const v = /v[\d.]+\s*$/.exec(full);
   set("aa-version", v ? v[0].trim() : full);
