@@ -108,7 +108,9 @@ function recommend(models, today) {
   take(orchestrator);
   const dev = pickDev(pool, taken);
   take(dev);
-  const researcher = pickResearcher(pool, taken);
+  // The researcher only has to differ from dev, so it can share the cheap model
+  // with the orchestrator, as in opencode-go-value.
+  const researcher = pickResearcher(pool, new Set(dev ? [dev.id] : []));
   take(researcher);
   const vendors = new Set([orchestrator, dev, researcher].filter(Boolean).map((m) => m.vendor));
   const rev = pickReviewer(pool, taken, vendors);

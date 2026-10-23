@@ -17,7 +17,7 @@ replaced by the plain token price.
 - Intelligence Index, speed and cost per task come from Artificial Analysis. A model without
   an index is marked `no AA data`.
 - Models with status legacy or deprecating, or retiring within 180 days, are never picked.
-- Role rules are in `refresh-prompt.md` and implemented in `app.js`. Each model is used once.
+- Role rules are in `refresh-prompt.md` and implemented in `app.js`. Orchestrator, dev and reviewer use different models; the researcher only has to differ from dev.
 
 ## Files
 

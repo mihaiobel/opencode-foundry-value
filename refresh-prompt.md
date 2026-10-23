@@ -22,10 +22,11 @@ embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
 or deprecating, and anything retired within 180 days.
 Blended price = (3 x input + output) / 4 per 1M tokens.
 
-Role matrix, each model used once:
+Role matrix. Orchestrator, dev and reviewer use different models; the researcher
+only has to differ from dev:
 - orchestrator: lowest cached-input price at AA intel >= 38.
 - dev: highest AA speed per blended dollar at AA intel >= 34.
-- researcher: lowest blended price at AA intel >= 34.
+- researcher: lowest blended price at AA intel >= 34, not the dev model.
 - reviewer: highest AA intel at output <= $15/1M, from a vendor no other role uses.
   If every priced vendor is taken, use the best remaining model and say "same vendor".
 
