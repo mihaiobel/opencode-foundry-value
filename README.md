@@ -20,7 +20,7 @@ replaced by the plain token price.
   matching AA revision (DeepSeek V4 Flash uses the April `0420` page).
 - AA values are the highest reasoning effort AA tests (max, xhigh or high).
 - Models with status legacy or deprecating, or retiring within 180 days, are never picked.
-- Role rules are in `refresh-prompt.md` and implemented in `app.js`. Orchestrator, dev and reviewer use different models; the researcher only has to differ from dev.
+- Role rules are in `refresh-prompt.md` and implemented in `app.js`. Orchestrator, dev and researcher may share one model when it is the cheapest; the reviewer must be a different one.
 
 ## Files
 

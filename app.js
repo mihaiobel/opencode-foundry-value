@@ -70,18 +70,18 @@ function pickOrchestrator(pool) {
 }
 
 // dev: most calls per task. Highest AA speed per blended dollar at intel >= 34.
-function pickDev(pool, taken) {
+function pickDev(pool) {
   return sortBy(
-    pool.filter((m) => m.aa_intelligence >= 34 && !taken.has(m.id)),
+    pool.filter((m) => m.aa_intelligence >= 34),
     (m) => -(m.aa_speed_tps / blended(m)),
     (m) => -m.aa_intelligence
   )[0] || null;
 }
 
-// researcher: reads a lot. Lowest blended price at AA intel >= 34, not already used.
-function pickResearcher(pool, taken) {
+// researcher: reads a lot. Lowest blended price at AA intel >= 34.
+function pickResearcher(pool) {
   return sortBy(
-    pool.filter((m) => m.aa_intelligence >= 34 && !taken.has(m.id)),
+    pool.filter((m) => m.aa_intelligence >= 34),
     (m) => blended(m),
     (m) => -m.aa_intelligence
   )[0] || null;
@@ -105,16 +105,12 @@ function pickReviewer(pool, taken, usedVendors) {
 
 function recommend(models, today) {
   const pool = eligible(models, today);
-  const taken = new Set();
-  const take = (m) => m && taken.add(m.id);
+  // Orchestrator, dev and researcher are all cost-driven, so they may end up on
+  // the same model when it is clearly the cheapest. Only the reviewer has to differ.
   const orchestrator = pickOrchestrator(pool);
-  take(orchestrator);
-  const dev = pickDev(pool, taken);
-  take(dev);
-  // The researcher only has to differ from dev, so it can share the cheap model
-  // with the orchestrator, as in opencode-go-value.
-  const researcher = pickResearcher(pool, new Set(dev ? [dev.id] : []));
-  take(researcher);
+  const dev = pickDev(pool);
+  const researcher = pickResearcher(pool);
+  const taken = new Set([orchestrator, dev, researcher].filter(Boolean).map((m) => m.id));
   const vendors = new Set([orchestrator, dev, researcher].filter(Boolean).map((m) => m.vendor));
   const rev = pickReviewer(pool, taken, vendors);
   return {
