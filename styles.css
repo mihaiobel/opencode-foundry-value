@@ -276,7 +276,7 @@ table.models thead th {
 table.models th.num,
 table.models td.num { text-align: right; padding-left: 1rem; padding-right: 0; }
 table.models th.num + th.num,
-table.models td.num + td.num { padding-left: 1.75rem; }
+table.models td.num + td.num { padding-left: 1.1rem; }
 
 table.models th.sortable { cursor: pointer; user-select: none; }
 table.models th.sortable:hover { color: var(--ink); }
@@ -503,5 +503,6 @@ details[open] > summary::before { transform: rotate(45deg); }
   * { transition: none !important; }
 }
 
-.pick-warn { margin: 0.4rem 0 0; font-size: 0.82rem; color: var(--accent, #d9693f); }
-.pick-warn:empty { display: none; }
+
+table.models th.retires,
+table.models td.retires { padding-left: 1.4rem; font-family: var(--mono); font-size: 0.84rem; }

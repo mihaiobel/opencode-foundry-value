@@ -89,7 +89,8 @@ function pickResearcher(pool, taken) {
 
 // reviewer: about one call per task. Highest AA intel with output <= $15/1M, from a
 // vendor no other role uses. If every priced vendor is already used, it falls
-// back to the best remaining model and says so (same_vendor).
+// back to the best remaining model of a used vendor. Errors may then correlate
+// with the other roles, which is accepted and not shown on the page.
 function pickReviewer(pool, taken, usedVendors) {
   const open = pool.filter((m) => !taken.has(m.id) && m.price_out <= REVIEWER_MAX_OUT);
   const rank = (list) =>
@@ -156,13 +157,11 @@ function fmtPair(m) {
 
 /* ---------- role picks ---------- */
 
-function fillRolePick(row, model, note) {
+function fillRolePick(row, model) {
   const set = (name, text) => {
     const el = row.querySelector('[data-field="' + name + '"]');
     if (el) el.textContent = text;
   };
-  const warn = row.querySelector('[data-field="note"]');
-  if (warn) warn.textContent = note || "";
   if (!model) {
     row.classList.add("pick-empty");
     set("model", "No model meets this role's criteria.");
@@ -177,12 +176,7 @@ function fillRolePick(row, model, note) {
 
 function renderRoles(reco) {
   for (const row of document.querySelectorAll("#picks .pick[data-role]")) {
-    const role = row.dataset.role;
-    const note =
-      role === "reviewer" && reco.reviewerSameVendor
-        ? "Same vendor as another role: errors may correlate."
-        : "";
-    fillRolePick(row, reco[role], note);
+    fillRolePick(row, reco[row.dataset.role]);
   }
 }
 
@@ -196,7 +190,7 @@ const COLUMNS = [
   { key: "aa_intelligence", label: "AA intel", type: "num", cell: (m) => m.aa_intelligence, fmt: (v) => fmtNum(v) },
   { key: "aa_speed_tps", label: "AA t/s", type: "num", cell: (m) => m.aa_speed_tps, fmt: (v) => fmtNum(v, 0) },
   { key: "aa_cost_per_task", label: "AA $/task", type: "num", cell: (m) => m.aa_cost_per_task, fmt: fmtUsd },
-  { key: "deprecation", label: "retires", type: "text", cell: (m) => (m.deprecation ? m.deprecation.slice(0, 7) : null) },
+  { key: "deprecation", label: "retires", type: "text", cls: "retires", cell: (m) => (m.deprecation ? m.deprecation.slice(0, 7) : null) },
 ];
 
 let sortState = { key: "aa_intelligence", dir: -1 };
@@ -253,6 +247,7 @@ function renderTable(models, reco) {
     th.textContent = col.label;
     th.className = "sortable";
     if (col.type === "num") th.classList.add("num");
+    if (col.cls) th.classList.add(col.cls);
     if (sortState.key === col.key) {
       th.classList.add(sortState.dir === 1 ? "sort-asc" : "sort-desc");
       th.setAttribute("aria-sort", sortState.dir === 1 ? "ascending" : "descending");
@@ -284,6 +279,7 @@ function renderTable(models, reco) {
           : col.fmt(raw) + (col.star && num(raw) !== null ? star(m) : "");
       td.dataset.label = col.label;
       if (col.type === "num") td.classList.add("num");
+      if (col.cls) td.classList.add(col.cls);
       if (idx === 0) {
         for (const role of recommended.get(m.id) || []) td.append(" ", badge(role));
         if (blended(m) === null)
