@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <title>opencode-foundry Value: best model per agent role</title>
+  <meta name="description" content="Picks the best Azure Foundry model for each opencode agent role, from Sweden Central EU data-zone prices and benchmark data." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%23262019'/%3E%3Crect x='7' y='17' width='4' height='8' fill='%23f4efe6'/%3E%3Crect x='14' y='11' width='4' height='14' fill='%23f4efe6'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23d9693f'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero" id="top">
+    <h1>One model per agent role.</h1>
+    <p class="lead">
+      Picked from the models Microsoft Foundry hosts in Sweden Central under the
+      EU data-zone-standard deployment, weighing price against the Artificial
+      Analysis benchmark. Nothing leaves the EU. Want fresh picks every day?
+      <a href="#prompt-heading">Copy the prompt.</a>
+    </p>
+    <dl class="meta-line">
+      <div><dt>As of</dt><dd id="stand-date">n/a</dd></div>
+      <div><dt>Scope</dt><dd id="scope-name">swedencentral, data-zone-standard (EU)</dd></div>
+      <div><dt>AA index</dt><dd id="aa-version">n/a</dd></div>
+    </dl>
+  </header>
+
+  <main>
+    <section aria-labelledby="roles-heading">
+      <div class="section-head">
+        <h2 id="roles-heading">Picks by role</h2>
+        <p class="hint">
+          One model per role, each model used once, taken from the models below.
+        </p>
+      </div>
+      <div id="picks" class="picks">
+        <article class="pick" data-role="orchestrator">
+          <h3 class="pick-role">Orchestrator</h3>
+          <p class="pick-model" data-field="model">n/a</p>
+          <dl class="pick-stats">
+            <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
+            <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
+            <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
+          </dl>
+          <p class="pick-warn" data-field="note"></p>
+          <p class="pick-reason">Many small turns that re-read the context. So it gets the cheapest cached input of all models with AA intel 38 or better.</p>
+        </article>
+
+        <article class="pick" data-role="dev">
+          <h3 class="pick-role">Dev</h3>
+          <p class="pick-model" data-field="model">n/a</p>
+          <dl class="pick-stats">
+            <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
+            <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
+            <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
+          </dl>
+          <p class="pick-warn" data-field="note"></p>
+          <p class="pick-reason">Runs the most calls per task. Speed per dollar counts, so the pick maximises AA speed per blended price at AA intel 34 or better.</p>
+        </article>
+
+        <article class="pick" data-role="reviewer">
+          <h3 class="pick-role">Reviewer</h3>
+          <p class="pick-model" data-field="model">n/a</p>
+          <dl class="pick-stats">
+            <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
+            <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
+            <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
+          </dl>
+          <p class="pick-warn" data-field="note"></p>
+          <p class="pick-reason">About one call per task, then a long report. Highest AA intel at an output price of $15/1M or less, from a vendor no other role uses.</p>
+        </article>
+
+        <article class="pick" data-role="researcher">
+          <h3 class="pick-role">Researcher</h3>
+          <p class="pick-model" data-field="model">n/a</p>
+          <dl class="pick-stats">
+            <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
+            <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
+            <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
+          </dl>
+          <p class="pick-warn" data-field="note"></p>
+          <p class="pick-reason">Reads a lot, writes little. Lowest blended price at AA intel 34 or better.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="table-heading">
+      <div class="section-head">
+        <h2 id="table-heading">Models</h2>
+        <p class="hint">
+          Every chat model that Foundry lists for swedencentral under data-zone-standard (EU).
+          Prices are USD, the source lists no EUR. Click a header to sort.
+          Grey rows have no price or no AA data and are never picked.
+        </p>
+      </div>
+      <div class="table-wrap">
+        <table id="models-table" class="models">
+          <tbody><tr><td class="loading">JavaScript builds this table from the local data.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="prompt-heading">
+      <div class="section-head">
+        <h2 id="prompt-heading">Daily prompt</h2>
+        <p class="hint">Copy it, run it once a day in any opencode setup, get fresh picks.</p>
+      </div>
+      <div class="prompt-frame">
+        <div class="prompt-bar">
+          <span class="prompt-file">refresh-prompt</span>
+          <button id="copy-prompt" type="button">Copy prompt</button>
+        </div>
+        <details class="prompt-details">
+          <summary>Show prompt</summary>
+          <pre id="daily-prompt">Re-evaluate Azure Foundry models for opencode, region swedencentral, deployment
+data-zone-standard (EU) only, and recommend the best model per agent role.
+
+Sources, primary only, never guess:
+- <a href="https://modelavailability.com/platforms/azure/regions/swedencentral?deployment=data-zone-standard+%28EU%29">https://modelavailability.com/platforms/azure/regions/swedencentral?deployment=data-zone-standard+%28EU%29</a>
+  -&gt; the model list. Open each model page and read the data-zone-standard (EU)
+  card: input, output and cached input in USD per 1M tokens (short context),
+  status and deprecation date. If the card has no price, mark it &quot;no price&quot;.
+- <a href="https://artificialanalysis.ai/models/&lt;slug&gt;">https://artificialanalysis.ai/models/&lt;slug&gt;</a>  -&gt; Intelligence Index, Cost per Task in USD,
+  output speed in t/s. If the AA page is missing or has no index, mark it &quot;no AA data&quot;.
+
+Skip: embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
+or deprecating, and anything retired within 180 days.
+Blended price = (3 x input + output) / 4 per 1M tokens.
+
+Role matrix, each model used once:
+- orchestrator: lowest cached-input price at AA intel &gt;= 38.
+- dev: highest AA speed per blended dollar at AA intel &gt;= 34.
+- researcher: lowest blended price at AA intel &gt;= 34.
+- reviewer: highest AA intel at output &lt;= $15/1M, from a vendor no other role uses.
+  If every priced vendor is taken, use the best remaining model and say &quot;same vendor&quot;.
+
+Output:
+1. Role table: role | model id | rationale | in/out $/1M, AA intel, AA speed.
+2. Table of all chat models with price, AA values, retire date and recommended role.
+3. Call out missing prices as &quot;no price&quot; and missing AA data as &quot;no AA data&quot;.</pre>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="sources-line">Sources <span class="sources"><a href="https://modelavailability.com/platforms/azure/regions/swedencentral?deployment=data-zone-standard+%28EU%29" rel="noopener noreferrer" target="_blank">modelavailability.com</a><a href="https://artificialanalysis.ai" rel="noopener noreferrer" target="_blank">artificialanalysis.ai</a></span></p>
+    <p>A static page. No build step, no tracking, no external requests. Reuse with attribution.</p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
