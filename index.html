@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark light" />
-  <title>opencode-foundry Value: best model per agent role</title>
+  <title>opencode-foundry Value: worker and reviewer</title>
   <meta name="description" content="Picks the best Azure Foundry model for each opencode agent role, from Sweden Central EU data-zone prices and benchmark data." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%23262019'/%3E%3Crect x='7' y='17' width='4' height='8' fill='%23f4efe6'/%3E%3Crect x='14' y='11' width='4' height='14' fill='%23f4efe6'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23d9693f'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="hero" id="top">
-    <h1>One model per agent role.</h1>
+    <h1>A worker and a reviewer.</h1>
     <p class="lead">
       Picked from the models Microsoft Foundry hosts in Sweden Central under the
       EU data-zone-standard deployment, weighing price against the Artificial
@@ -28,32 +28,21 @@
   <main>
     <section aria-labelledby="roles-heading">
       <div class="section-head">
-        <h2 id="roles-heading">Picks by role</h2>
+        <h2 id="roles-heading">Picks</h2>
         <p class="hint">
-          One model per role, taken from the models below. Orchestrator, dev and researcher may share a model when it is the cheapest; the reviewer is always a different one.
+          Two picks from the models below: a cheap worker and a stronger reviewer.
         </p>
       </div>
       <div id="picks" class="picks">
-        <article class="pick" data-role="orchestrator">
-          <h3 class="pick-role">Orchestrator</h3>
+        <article class="pick" data-role="worker">
+          <h3 class="pick-role">Worker</h3>
           <p class="pick-model" data-field="model">n/a</p>
           <dl class="pick-stats">
             <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
             <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
             <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
           </dl>
-          <p class="pick-reason">Many small turns that re-read the context. So it gets the cheapest cached input of all models with AA intel 38 or better.</p>
-        </article>
-
-        <article class="pick" data-role="dev">
-          <h3 class="pick-role">Dev</h3>
-          <p class="pick-model" data-field="model">n/a</p>
-          <dl class="pick-stats">
-            <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
-            <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
-            <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
-          </dl>
-          <p class="pick-reason">Runs the most calls per task. Speed per dollar counts, so the pick maximises AA speed per blended price at AA intel 34 or better.</p>
+          <p class="pick-reason">Orchestrator, dev and researcher in one. All three are cost-driven and on Foundry EU the same model wins each of them: the lowest blended price at AA intel 34 or better.</p>
         </article>
 
         <article class="pick" data-role="reviewer">
@@ -64,20 +53,10 @@
             <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
             <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
           </dl>
-          <p class="pick-reason">About one call per task, then a long report. Highest AA intel (34 or better) at an output price of $15/1M or less, from a vendor no other role uses.</p>
-        </article>
-
-        <article class="pick" data-role="researcher">
-          <h3 class="pick-role">Researcher</h3>
-          <p class="pick-model" data-field="model">n/a</p>
-          <dl class="pick-stats">
-            <div><dt>in / out $/1M</dt><dd data-field="price">n/a</dd></div>
-            <div><dt>AA intel</dt><dd data-field="intel">n/a</dd></div>
-            <div><dt>AA speed</dt><dd data-field="speed">n/a</dd></div>
-          </dl>
-          <p class="pick-reason">Reads a lot, writes little. Lowest blended price at AA intel 34 or better.</p>
+          <p class="pick-reason">About one call per task, then a long report. Highest AA intel (34 or better) at an output price of $15/1M or less, from a vendor other than the worker if one qualifies.</p>
         </article>
       </div>
+      <p class="hint escalation">Escalation: if the worker fails at planning or delegating, run the orchestrator on <code id="escalation-model">n/a</code> and keep the worker for dev and research.</p>
     </section>
 
     <section aria-labelledby="table-heading">
@@ -128,16 +107,14 @@ embeddings, rerank, OCR, image, audio, realtime, router models, status legacy
 or deprecating, and anything retired within 180 days.
 Blended price = (3 x input + output) / 4 per 1M tokens.
 
-Role matrix. Orchestrator, dev and researcher are cost-driven and may share one model
-when it is the cheapest. The reviewer must be a different model:
-- orchestrator: lowest cached-input price at AA intel &gt;= 38.
-- dev: highest AA speed per blended dollar at AA intel &gt;= 34.
-- researcher: lowest blended price at AA intel &gt;= 34.
-- reviewer: highest AA intel (at least 34) at output &lt;= $15/1M, from a vendor no other role uses.
-  If every priced vendor is taken, use the best remaining model and say "same vendor".
+Picks:
+- worker (orchestrator, dev and researcher in one): lowest blended price at AA intel &gt;= 34.
+- reviewer: highest AA intel (at least 34) at output &lt;= $15/1M, a different model than
+  the worker, from another vendor if one qualifies.
+- escalation: if the worker fails at planning, run the orchestrator on the reviewer model.
 
 Output:
-1. Role table: role | model id | rationale | in/out $/1M, AA intel, AA speed.
+1. Table: role | model id | rationale | in/out $/1M, AA intel, AA speed.
 2. Table of all chat models with price, AA values, retire date and recommended role.
 3. Call out missing prices as "no price" and missing AA data as "no AA data".</pre>
         </details>

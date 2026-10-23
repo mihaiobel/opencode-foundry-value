@@ -59,27 +59,10 @@ function sortBy(pool, ...keys) {
 
 /* ---------- role matrix ---------- */
 
-// orchestrator: many small turns re-read the context, so the cached-input price
-// decides. Cheapest cached input among models with AA intel >= 38.
-function pickOrchestrator(pool) {
-  return sortBy(
-    pool.filter((m) => m.aa_intelligence >= 38 && num(m.price_cached) !== null),
-    (m) => m.price_cached,
-    (m) => -m.aa_intelligence
-  )[0] || null;
-}
-
-// dev: most calls per task. Highest AA speed per blended dollar at intel >= 34.
-function pickDev(pool) {
-  return sortBy(
-    pool.filter((m) => m.aa_intelligence >= 34),
-    (m) => -(m.aa_speed_tps / blended(m)),
-    (m) => -m.aa_intelligence
-  )[0] || null;
-}
-
-// researcher: reads a lot. Lowest blended price at AA intel >= 34.
-function pickResearcher(pool) {
+// worker: orchestrator, dev and researcher in one. All three are cost-driven and
+// on Foundry EU the same model won each of them, so the page picks one: lowest
+// blended price at AA intel >= 34, then the higher intel.
+function pickWorker(pool) {
   return sortBy(
     pool.filter((m) => m.aa_intelligence >= 34),
     (m) => blended(m),
@@ -105,21 +88,11 @@ function pickReviewer(pool, taken, usedVendors) {
 
 function recommend(models, today) {
   const pool = eligible(models, today);
-  // Orchestrator, dev and researcher are all cost-driven, so they may end up on
-  // the same model when it is clearly the cheapest. Only the reviewer has to differ.
-  const orchestrator = pickOrchestrator(pool);
-  const dev = pickDev(pool);
-  const researcher = pickResearcher(pool);
-  const taken = new Set([orchestrator, dev, researcher].filter(Boolean).map((m) => m.id));
-  const vendors = new Set([orchestrator, dev, researcher].filter(Boolean).map((m) => m.vendor));
+  const worker = pickWorker(pool);
+  const taken = new Set(worker ? [worker.id] : []);
+  const vendors = new Set(worker ? [worker.vendor] : []);
   const rev = pickReviewer(pool, taken, vendors);
-  return {
-    orchestrator,
-    dev,
-    researcher,
-    reviewer: rev ? rev.model : null,
-    reviewerSameVendor: rev ? rev.sameVendor : false,
-  };
+  return { worker, reviewer: rev ? rev.model : null };
 }
 
 /* ---------- formatting ---------- */
@@ -176,6 +149,10 @@ function renderRoles(reco) {
   for (const row of document.querySelectorAll("#picks .pick[data-role]")) {
     fillRolePick(row, reco[row.dataset.role]);
   }
+  // Escalation: if the worker fails at planning, the reviewer model takes over
+  // the orchestrator role.
+  const esc = document.getElementById("escalation-model");
+  if (esc) esc.textContent = reco.reviewer ? reco.reviewer.id : NA;
 }
 
 /* ---------- sortable table ---------- */
@@ -231,7 +208,7 @@ function renderTable(models, reco) {
   const table = document.getElementById("models-table");
   if (!table) return;
   const recommended = new Map();
-  for (const role of ["orchestrator", "dev", "reviewer", "researcher"]) {
+  for (const role of ["worker", "reviewer"]) {
     const m = reco[role];
     if (!m) continue;
     if (!recommended.has(m.id)) recommended.set(m.id, []);

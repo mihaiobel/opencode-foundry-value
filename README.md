@@ -1,10 +1,10 @@
 # opencode-foundry Value
 
-Which Azure Foundry model should run which opencode agent role, if it has to be hosted in
-Sweden Central under the EU data zone? One pick each for orchestrator, dev, reviewer and
-researcher, based on Foundry prices and Artificial Analysis benchmarks.
+Which Azure Foundry model should run the opencode agents, if it has to be hosted in
+Sweden Central under the EU data zone? Two picks, a worker (orchestrator, dev and researcher in one) and a
+reviewer, based on Foundry prices and Artificial Analysis benchmarks.
 
-Sister project of opencode-go-value. Same page, same role logic. The Go plan quota is
+Sister project of opencode-go-value. Same page, but only two picks. The Go plan quota is
 replaced by the plain token price.
 
 ## How it works
@@ -20,7 +20,7 @@ replaced by the plain token price.
   matching AA revision (DeepSeek V4 Flash uses the April `0420` page).
 - AA values are the highest reasoning effort AA tests (max, xhigh or high).
 - Models with status legacy or deprecating, or retiring within 180 days, are never picked.
-- Role rules are in `refresh-prompt.md` and implemented in `app.js`. Orchestrator, dev and researcher may share one model when it is the cheapest; the reviewer must be a different one.
+- The rules are in `refresh-prompt.md` and implemented in `app.js`. The worker is the cheapest model at AA intel 34 or better. The reviewer is the best remaining model at output $15/1M or less. If the worker fails at planning, run the orchestrator on the reviewer model.
 
 ## Files
 

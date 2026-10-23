@@ -506,3 +506,6 @@ details[open] > summary::before { transform: rotate(45deg); }
 
 table.models th.retires,
 table.models td.retires { padding-left: 1.4rem; font-family: var(--mono); font-size: 0.84rem; }
+
+.escalation { margin-top: 1rem; }
+.escalation code { font-family: var(--mono); font-size: 0.9em; color: var(--ink); }
